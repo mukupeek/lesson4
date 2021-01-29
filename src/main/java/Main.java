@@ -8,35 +8,56 @@ public class Main {
 
     public static void main(String[] args) {
         ExecutorService executorService = Executors.newFixedThreadPool(3);
-       executorService.submit(()-> {
-           threadFor(curChar,nextChar);
-           });
-       nextChar = 'C';
-        executorService.submit(()-> {
-            threadFor(curChar,nextChar);
-        });
-        nextChar = 'A';
-        executorService.submit(()-> {
-            threadFor(curChar,nextChar);
-        });
-        nextChar = 'B';
-    }
-    public static void threadFor(char curChar, char nextChar){
-        try {
-            for (int i = 0; i < 5; i++) {
-                synchronized (key) {
-                    while (curChar != 'A') {
+        executorService.submit(() -> {
+            try {
+                for (int i = 0; i < 5; i++) {
+                    synchronized (key) {
+                        while (curChar != 'A') {
                             key.wait();
                         }
-                    System.out.println(curChar);
-                    curChar = nextChar;
-                    key.notifyAll();
+                        System.out.println("A");
+                        curChar = 'B';
+                        key.notifyAll();
+                    }
                 }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        });
+        executorService.submit(() -> {
+            try {
+                for (int i = 0; i < 5; i++) {
+                    synchronized (key) {
+                        while (curChar != 'B') {
+                            key.wait();
+                        }
+                        System.out.println("B");
+                        curChar = 'C';
+                        key.notifyAll();
+                    }
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+        executorService.submit(() -> {
+            try {
+                for (int i = 0; i < 5; i++) {
+                    synchronized (key) {
+                        while (curChar != 'C') {
+                            key.wait();
+                        }
+                        System.out.println("C");
+                        curChar = 'A';
+                        key.notifyAll();
+                    }
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+
     }
+
 }
-
-
