@@ -3,8 +3,6 @@ import java.util.concurrent.Executors;
 
 public class Main {
     private static Object key = new Object();
-    private static volatile char curChar;
-    private static volatile char nextChar;
     private static volatile char printChar = 'A';
     private static ExecutorService executorService;
 
